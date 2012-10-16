@@ -22,7 +22,7 @@ T3.View.prototype._mouseClick = function(event) {
 };
 
 T3.View.prototype.update = function() {
-	$('#status').text('REAL STATUS GOES HERE!');
+	$('#status').text(this.model.currentPlayer.name + "'s move");
 	this._draw();
 };
 
