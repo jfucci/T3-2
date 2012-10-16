@@ -9,8 +9,6 @@ TODO
 Now
 ===
 
-In the view add code to draw columns. Check that it works.
-
 Add a players property to Model that is an array of two players named 'X' and 'O'.
 
 Add a currentPlayer property to Model representing the player whose move it is. Initialize it to the first player from the players array for now.

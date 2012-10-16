@@ -39,6 +39,7 @@ T3.View.prototype._drawBoard = function() {
 
 	this.ctx.beginPath();
 	this._drawRowLines();
+	this._drawColumnLines();
 	this._stroke(1 / 9, 'black');
 };
 
@@ -51,6 +52,16 @@ T3.View.prototype._drawRowLines = function() {
 		this.ctx.lineTo(1, py + nudge);
 	}
 };
+
+T3.View.prototype._drawColumnLines = function() {
+	var size = this.model.size;
+	var nudge = this.pixel / 2;
+	for(var x = 1; x < size; x++) {
+		var px = (x / size);
+		this.ctx.moveTo(px + nudge, 0);
+		this.ctx.lineTo(px + nudge, 1); 
+	}
+}
 
 T3.View.prototype._stroke = function(pixelWeight, color) {
 	this.ctx.strokeStyle = color;
