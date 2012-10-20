@@ -83,23 +83,31 @@ T3.View.prototype._stroke = function(pixelWeight, color) {
 
 T3.View.prototype._drawCircle = function(x,y) {
 	this.ctx.beginPath();
+
 	var size = this.model.size;
 	var px = (x / size) + 1/6;
 	var py = (y / size) + 1/6;
-	this.ctx.arc(px, py, 0.13, 0, 2*Math.PI);
+
+	this.ctx.arc(px, py, 0.125, 0, 2*Math.PI);
 	this._stroke(1 / 3, 'black');
+
 	this.ctx.closePath();
 }
 
 T3.View.prototype._drawCross = function(x,y) {
 	this.ctx.beginPath();
+	var adjustment = .0625;
+
 	var cellSize = 1 / this.model.size;
-	var px = (x * cellSize);
-	var py = (y * cellSize);
+	var cellSizeAdjusted = cellSize - 2*adjustment;
+
+	var px = (x * cellSize) + adjustment;
+	var py = (y * cellSize) + adjustment;
+
 	this.ctx.moveTo(px, py);
-	this.ctx.lineTo(px + cellSize, py + cellSize);
-	this.ctx.moveTo(px, py + cellSize);
-	this.ctx.lineTo(px + cellSize, py);
+	this.ctx.lineTo(px + cellSizeAdjusted, py + cellSizeAdjusted);
+	this.ctx.moveTo(px, py + cellSizeAdjusted);
+	this.ctx.lineTo(px + cellSizeAdjusted, py);
 
 	this._stroke(1 / 3, 'black');
 	this.ctx.closePath();
