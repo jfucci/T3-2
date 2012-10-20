@@ -13,17 +13,29 @@ T3.View = function(model) {
 	this.pixel = 1 / width;
 
 	this.canvas.click(_.bind(this._mouseClick, this));
+
 };
 
 T3.View.prototype._mouseClick = function(event) {
 	var pixelX = event.pageX - this.canvas.offset().left;
 	var pixelY = event.pageY - this.canvas.offset().top;
-
+	this.model.move(pixelX,pixelY);
+	this.update();
 };
 
 T3.View.prototype.update = function() {
 	$('#status').text(this.model.currentPlayer.name + "'s move");
 	this._draw();
+	for (var x = 0; x < 3; x++) {
+		for (var y = 0; y < 3; y++) {
+			if (board[x][y] === 'O') {
+				this._drawCircle(x, y);
+			}
+			else if (board[x][y] === 'X'){
+				this._drawCross(x, y);
+			}
+		}
+	}
 };
 
 T3.View.prototype._draw = function() {
@@ -40,7 +52,7 @@ T3.View.prototype._drawBoard = function() {
 	this.ctx.beginPath();
 	this._drawRowLines();
 	this._drawColumnLines();
-	this._stroke(1 / 9, 'black');
+	this._stroke(1 / 3, 'black');
 };
 
 T3.View.prototype._drawRowLines = function() {
@@ -55,7 +67,7 @@ T3.View.prototype._drawRowLines = function() {
 
 T3.View.prototype._drawColumnLines = function() {
 	var size = this.model.size;
-	var nudge = this.pixel / 2;
+	var nudge = this.pixel / 2; 
 	for(var x = 1; x < size; x++) {
 		var px = (x / size);
 		this.ctx.moveTo(px + nudge, 0);
@@ -67,4 +79,28 @@ T3.View.prototype._stroke = function(pixelWeight, color) {
 	this.ctx.strokeStyle = color;
 	this.ctx.lineWidth = this.pixel * pixelWeight;
 	this.ctx.stroke();
-};
+}
+
+T3.View.prototype._drawCircle = function(x,y) {
+	this.ctx.beginPath();
+	var size = this.model.size;
+	var px = (x / size) + 1/6;
+	var py = (y / size) + 1/6;
+	this.ctx.arc(px, py, 0.13, 0, 2*Math.PI);
+	this._stroke(1 / 3, 'black');
+	this.ctx.closePath();
+}
+
+T3.View.prototype._drawCross = function(x,y) {
+	this.ctx.beginPath();
+	var cellSize = 1 / this.model.size;
+	var px = (x * cellSize);
+	var py = (y * cellSize);
+	this.ctx.moveTo(px, py);
+	this.ctx.lineTo(px + cellSize, py + cellSize);
+	this.ctx.moveTo(px, py + cellSize);
+	this.ctx.lineTo(px + cellSize, py);
+
+	this._stroke(1 / 3, 'black');
+	this.ctx.closePath();
+}
