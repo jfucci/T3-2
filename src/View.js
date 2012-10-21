@@ -19,22 +19,40 @@ T3.View = function(model) {
 T3.View.prototype._mouseClick = function(event) {
 	var pixelX = event.pageX - this.canvas.offset().left;
 	var pixelY = event.pageY - this.canvas.offset().top;
-	this.model.move(pixelX,pixelY);
-	this.update();
+	if(!(this.model.winner)) {
+		this.model.move(pixelX,pixelY);
+		this.update();
+	}
 };
 
 T3.View.prototype.update = function() {
-	$('#status').text(this.model.currentPlayer.name + "'s move");
+	var boardCount = 0;
 	this._draw();
 	for (var x = 0; x < 3; x++) {
 		for (var y = 0; y < 3; y++) {
 			if (board[x][y] === 'O') {
 				this._drawCircle(x, y);
+				boardCount++;
 			}
 			else if (board[x][y] === 'X'){
 				this._drawCross(x, y);
+				boardCount++;
 			}
 		}
+	}
+	
+	if(!this.model.winner) {
+		this.model.winner = this.model.getWinner();
+	}
+
+	if(boardCount === 9 && !(this.model.winner)) {
+		$('#status').text('Stalemate!');
+	}
+	else if (this.model.winner) {
+		$('#status').text(this.model.getWinner() + ' is the winner');
+	}
+	else {
+		$('#status').text(this.model.currentPlayer.name + "'s move");
 	}
 };
 
@@ -73,13 +91,13 @@ T3.View.prototype._drawColumnLines = function() {
 		this.ctx.moveTo(px + nudge, 0);
 		this.ctx.lineTo(px + nudge, 1); 
 	}
-}
+};
 
 T3.View.prototype._stroke = function(pixelWeight, color) {
 	this.ctx.strokeStyle = color;
 	this.ctx.lineWidth = this.pixel * pixelWeight;
 	this.ctx.stroke();
-}
+};
 
 T3.View.prototype._drawCircle = function(x,y) {
 	this.ctx.beginPath();
@@ -92,7 +110,7 @@ T3.View.prototype._drawCircle = function(x,y) {
 	this._stroke(1 / 3, 'black');
 
 	this.ctx.closePath();
-}
+};
 
 T3.View.prototype._drawCross = function(x,y) {
 	this.ctx.beginPath();
@@ -111,4 +129,4 @@ T3.View.prototype._drawCross = function(x,y) {
 
 	this._stroke(1 / 3, 'black');
 	this.ctx.closePath();
-}
+};

@@ -6,16 +6,6 @@ Very simple Tic Tac Toe implementation in JavaScript
 TODO
 ==
 
-Now
-===
-
-Add a getWinner method in the model. Have it return either the current winner or null if nobody has won yet. Have the view reflect the winner in the status line. Check that this works.
-
-Have the status read 'Statemate!' if nobody can move.
-
-Make it impossible to move once you have a winner. Check that this works. You should now have a wokring Tic-Tac-Toe implementation.
-
-
 Cleanup
 ===
 
