@@ -30,11 +30,11 @@ T3.View.prototype.update = function() {
 	this._draw();
 	for (var x = 0; x < 3; x++) {
 		for (var y = 0; y < 3; y++) {
-			if (board[x][y] === 'O') {
+			if (this.model.board[x][y] === 'O') {
 				this._drawCircle(x, y);
 				boardCount++;
 			}
-			else if (board[x][y] === 'X'){
+			else if (this.model.board[x][y] === 'X'){
 				this._drawCross(x, y);
 				boardCount++;
 			}
