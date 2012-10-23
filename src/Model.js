@@ -1,15 +1,16 @@
 /*global _:true, T3:true */
 
 T3.Model = function() {
-	this.size = 3;
+	this.xCells = 3;
+	this.yCells = 3;
 	this.players = [new T3.Player('X'), new T3.Player('O')];
 	this.currentPlayer = {};
 	this.winner = null;
-	
+
 	this.board = new Array;
-	for(var x = 0; x <= this.size; x++) {
+	for(var x = 0; x <= this.xCells; x++) {
 		this.board[x] = []; 
-		for(var y = 0; y <= this.size; y++) {
+		for(var y = 0; y <= this.xCells; y++) {
 			this.board[x][y] = null;
 		}
 	}
@@ -22,16 +23,23 @@ T3.Player = function(name) {
 T3.Model.prototype.restart = function() {
 	this.winner = null;
 	this.currentPlayer = this.players[Math.floor(Math.random() * 2)]; 
-	for(var x = 0; x <= this.size; x++) {
-		for(var y = 0; y <= this.size; y++) {
+	for(var x = 0; x <= this.xCells; x++) {
+		for(var y = 0; y <= this.xCells; y++) {
 			this.board[x][y] = null;
 		}
 	}
 };
 
-T3.Model.prototype.move = function(x,y) {
-	x = Math.floor(x / 100);
-	y = Math.floor(y / 100);
+T3.Model.prototype.move = function(pixelX, pixelY) {
+	var canvas = $("#canvas");	
+	var widthInPixels = canvas.width();
+	var heightInPixels = canvas.height();
+	var cellWidthInPixels = widthInPixels / this.xCells;
+	var cellHeightInPixels = heightInPixels / this.xCells;
+
+	var x = Math.floor(pixelX / cellWidthInPixels);	//find the x index of the cell
+	var y = Math.floor(pixelY / cellHeightInPixels); //find the y index of the cell
+
 	if(!(this.board[x][y])) {
 		this.board[x][y] = this.currentPlayer.name;
 		if(this.currentPlayer.name === 'X') {
@@ -45,23 +53,21 @@ T3.Model.prototype.move = function(x,y) {
 
 T3.Model.prototype.getWinner = function() {
 	var winner = null;
-	var px = 1;
-	var py = 1;
 
 	//check for a winner in the columns:
-	for(var x = 0; x < this.size; x++) {
-		if(this.board[x][py]) {
-			if(this.board[x][py] === this.board[x][py-1] && this.board[x][py] === this.board[x][py+1]) {
-				winner = this.board[x][py];
+	for(var x = 0; x < this.xCells; x++) {
+		if(this.board[x][1]) {
+			if(this.board[x][1] === this.board[x][0] && this.board[x][1] === this.board[x][2]) {
+				winner = this.board[x][1];
 			}
 		}
 	}
 
 	//check for a winner in the rows:
-	for(var y = 0; y < this.size; y++) {
-		if(this.board[px][y]) {
-			if(this.board[px][y] === this.board[px-1][y] && this.board[px][y] === this.board[px+1][y]) {
-				winner = this.board[px][y];
+	for(var y = 0; y < this.xCells; y++) {
+		if(this.board[1][y]) {
+			if(this.board[1][y] === this.board[0][y] && this.board[1][y] === this.board[2][y]) {
+				winner = this.board[1][y];
 			}
 		}
 	}

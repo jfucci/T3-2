@@ -9,7 +9,6 @@ T3.View = function(model) {
 	var height = this.canvas.height();
 
 	this.ctx.scale(width, height);
-
 	this.pixel = 1 / width;
 
 	this.canvas.click(_.bind(this._mouseClick, this));
@@ -26,26 +25,26 @@ T3.View.prototype._mouseClick = function(event) {
 };
 
 T3.View.prototype.update = function() {
-	var boardCount = 0;
+	var takenCells = 0;
 	this._draw();
-	for (var x = 0; x < 3; x++) {
-		for (var y = 0; y < 3; y++) {
+	for (var x = 0; x < this.model.xCells; x++) {
+		for (var y = 0; y < this.model.yCells; y++) {
 			if (this.model.board[x][y] === 'O') {
 				this._drawCircle(x, y);
-				boardCount++;
+				takenCells++;
 			}
 			else if (this.model.board[x][y] === 'X'){
 				this._drawCross(x, y);
-				boardCount++;
+				takenCells++;
 			}
 		}
 	}
-	
+
 	if(!this.model.winner) {
 		this.model.winner = this.model.getWinner();
 	}
 
-	if(boardCount === 9 && !(this.model.winner)) {
+	if(takenCells === this.model.xCells * this.model.yCells && !(this.model.winner)) {
 		$('#status').text('Stalemate!');
 	}
 	else if (this.model.winner) {
@@ -66,7 +65,6 @@ T3.View.prototype._draw = function() {
 };
 
 T3.View.prototype._drawBoard = function() {
-
 	this.ctx.beginPath();
 	this._drawRowLines();
 	this._drawColumnLines();
@@ -74,20 +72,18 @@ T3.View.prototype._drawBoard = function() {
 };
 
 T3.View.prototype._drawRowLines = function() {
-	var size = this.model.size;
 	var nudge = this.pixel / 2;
-	for(var y = 1; y < size; y++) {
-		var py = (y / size);
+	for(var y = 1; y < this.model.yCells; y++) {
+		var py = (y / this.model.yCells);
 		this.ctx.moveTo(0, py + nudge);
 		this.ctx.lineTo(1, py + nudge);
 	}
 };
 
 T3.View.prototype._drawColumnLines = function() {
-	var size = this.model.size;
 	var nudge = this.pixel / 2; 
-	for(var x = 1; x < size; x++) {
-		var px = (x / size);
+	for(var x = 1; x < this.model.xCells; x++) {
+		var px = (x / this.model.xCells);
 		this.ctx.moveTo(px + nudge, 0);
 		this.ctx.lineTo(px + nudge, 1); 
 	}
@@ -102,11 +98,12 @@ T3.View.prototype._stroke = function(pixelWeight, color) {
 T3.View.prototype._drawCircle = function(x,y) {
 	this.ctx.beginPath();
 
-	var size = this.model.size;
-	var px = (x / size) + 1/6;
-	var py = (y / size) + 1/6;
+	var cellWidth = 1 / this.model.xCells;
+	x = (x / this.model.xCells) + cellWidth / 2; //change x to be the x coordinate of the middle of the cell
+	y = (y / this.model.yCells) + cellWidth / 2; //change y to be the y coordinate of the middle of the cell
+	var radius = (cellWidth / 2) - (cellWidth * 1/8); //the diameter will be 3/4 the cell width
 
-	this.ctx.arc(px, py, 0.125, 0, 2*Math.PI);
+	this.ctx.arc(x, y, radius, 0, 2*Math.PI); 
 	this._stroke(1 / 3, 'black');
 
 	this.ctx.closePath();
@@ -114,18 +111,20 @@ T3.View.prototype._drawCircle = function(x,y) {
 
 T3.View.prototype._drawCross = function(x,y) {
 	this.ctx.beginPath();
-	var adjustment = .0625;
+	var cellWidth = 1 / this.model.xCells; 
 
-	var cellSize = 1 / this.model.size;
-	var cellSizeAdjusted = cellSize - 2*adjustment;
+	//necessary so the 'X' does not go all the way to the corners of the cell:
+	var adjustment = (cellWidth / 2) - (cellWidth * cellWidth);
+	
+	var cellWidthAdjusted = cellWidth - 2 * adjustment;
 
-	var px = (x * cellSize) + adjustment;
-	var py = (y * cellSize) + adjustment;
+	x = (x * cellWidth) + adjustment; //change x to the x coordinate of the top left corner of the cell
+	y = (y * cellWidth) + adjustment; //change y to the y coordinate of the top left corner of the cell
 
-	this.ctx.moveTo(px, py);
-	this.ctx.lineTo(px + cellSizeAdjusted, py + cellSizeAdjusted);
-	this.ctx.moveTo(px, py + cellSizeAdjusted);
-	this.ctx.lineTo(px + cellSizeAdjusted, py);
+	this.ctx.moveTo(x, y);
+	this.ctx.lineTo(x + cellWidthAdjusted, y + cellWidthAdjusted);
+	this.ctx.moveTo(x, y + cellWidthAdjusted);
+	this.ctx.lineTo(x + cellWidthAdjusted, y);
 
 	this._stroke(1 / 3, 'black');
 	this.ctx.closePath();
