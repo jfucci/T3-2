@@ -42,12 +42,7 @@ T3.Model.prototype.move = function(pixelX, pixelY) {
 
 	if(!(this.board[x][y])) {
 		this.board[x][y] = this.currentPlayer.name;
-		if(this.currentPlayer.name === 'X') {
-		this.currentPlayer = this.players[1];
-		}
-		else {
-			this.currentPlayer = this.players[0];
-		}
+		this.currentPlayer = this.players[(this.players.indexOf(this.currentPlayer) + 1) % this.players.length];
 	}
 };
 
