@@ -2,8 +2,8 @@
 
 T3.Controller = function() {
 
-	var model = new T3.Model();     //was var model
-    var view = new T3.View(model);  //was var view
+	var model = new T3.Model();
+    var view = new T3.View(model);
 
 	$("#restart").click(function(event){
      model.restart();
