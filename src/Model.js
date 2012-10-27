@@ -56,7 +56,7 @@ T3.Model.prototype.checkRow = function(x, y) {
 		}
 	}
 	
-	for(var xx = x; xx < this.xCells && xx <= x + this.winnerSize; xx++) {
+	for(xx = x; xx < this.xCells && xx <= x + this.winnerSize; xx++) {
 		if(this.board[xx][y] === this.board[xx+1][y] && this.board[xx][y] === this.board[x][y]) {
 			count++;
 		}
@@ -67,7 +67,6 @@ T3.Model.prototype.checkRow = function(x, y) {
 };
 
 T3.Model.prototype.checkColumn = function(x, y) {
-	var yy = y;
 	var count = 1;
 	for(var yy = y; yy > 0 && yy >= y - this.winnerSize; yy--) {
 		if(this.board[x][yy] === this.board[x][yy-1] && this.board[x][yy] === this.board[x][y]) {
@@ -75,7 +74,7 @@ T3.Model.prototype.checkColumn = function(x, y) {
 		}
 	}
 
-	for(var yy = y; yy < this.yCells && yy <= y + this.winnerSize; yy++) {
+	for(yy = y; yy < this.yCells && yy <= y + this.winnerSize; yy++) {
 		if(this.board[x][yy] === this.board[x][yy+1] && this.board[x][yy] === this.board[x][y]) {
 			count++;
 		}
@@ -90,11 +89,13 @@ T3.Model.prototype.checkLeftDiagonal = function(x, y) {
 	var xx = x;
 	var yy = y;
 	var count = 1;
-	while (xx > 0 && xx >= x - this.winnerSize 
-		&& yy > 0 && yy >= y - this.winnerSize) {
+	while (xx > 0 && xx >= x - this.winnerSize && 
+		yy > 0 && yy >= y - this.winnerSize) 
+	{
 
-		if(this.board[xx][yy] === this.board[xx-1][yy-1] 
-			&& this.board[xx][yy] === this.board[x][y]) {
+		if(this.board[xx][yy] === this.board[xx-1][yy-1] && 
+			this.board[xx][yy] === this.board[x][y]) 
+		{
 			count++;
 		}
 		xx--; yy--;
@@ -102,11 +103,13 @@ T3.Model.prototype.checkLeftDiagonal = function(x, y) {
 
 	xx = x; yy = y;
 	
-	while (xx < this.xCells && xx <= x + this.winnerSize 
-		&& yy < this.yCells && yy <= y + this.winnerSize) {
+	while (xx < this.xCells && xx <= x + this.winnerSize && 
+		yy < this.yCells && yy <= y + this.winnerSize) 
+	{
 
-		if(this.board[xx][yy] === this.board[xx+1][yy+1] 
-			&& this.board[xx][yy] === this.board[x][y]) {
+		if(this.board[xx][yy] === this.board[xx+1][yy+1] && 
+			this.board[xx][yy] === this.board[x][y]) 
+		{
 			count++;
 		}
 		xx++; yy++;
@@ -121,11 +124,13 @@ T3.Model.prototype.checkRightDiagonal = function(x, y) {
 	var xx = x;
 	var yy = y;
 	var count = 1;
-	while (xx < this.xCells && xx <= x + this.winnerSize
-		&& yy > 0 && yy >= y - this.winnerSize) {
+	while (xx < this.xCells && xx <= x + this.winnerSize && 
+		yy > 0 && yy >= y - this.winnerSize) 
+	{
 
-		if(this.board[xx][yy] === this.board[xx+1][yy-1] 
-			&& this.board[xx][yy] === this.board[x][y]) {
+		if(this.board[xx][yy] === this.board[xx+1][yy-1] && 
+			this.board[xx][yy] === this.board[x][y]) 
+		{
 			count++;
 		}
 		xx++; yy--;
@@ -133,11 +138,13 @@ T3.Model.prototype.checkRightDiagonal = function(x, y) {
 
 	xx = x; yy = y; 
 	
-	while (xx > 0 && xx >= x - this.winnerSize 
-		&& yy < this.yCells && yy <= y + this.winnerSize) {
+	while (xx > 0 && xx >= x - this.winnerSize && 
+		yy < this.yCells && yy <= y + this.winnerSize) 
+	{
 
-		if(this.board[xx][yy] === this.board[xx-1][yy+1] 
-			&& this.board[xx][yy] === this.board[x][y]) {
+		if(this.board[xx][yy] === this.board[xx-1][yy+1] && 
+			this.board[xx][yy] === this.board[x][y]) 
+		{
 			count++;
 		}
 		xx--; yy++;
@@ -148,25 +155,19 @@ T3.Model.prototype.checkRightDiagonal = function(x, y) {
 };
 
 T3.Model.prototype.checkWinner = function(x, y) {
-	//this switch statement returns true if any of the check methods returns
+	//this if statement returns true if any of the check methods returns
 	//true, and returns false if all of them return false:
-	switch(true) {
-		case this.checkRow(x, y):
-			return true; 
-			break;
-		case this.checkColumn(x, y):
-			return true;
-			break;
-		case this.checkLeftDiagonal(x, y):
-			return true;
-			break;
-		case this.checkRightDiagonal(x, y):
-			return true;
-			break;
-		default:
-			return false;
+	if (this.checkRow(x, y) ||
+		this.checkColumn(x, y) ||
+		this.checkLeftDiagonal(x, y) ||
+		this.checkRightDiagonal(x, y))
+	{
+		return true;
 	}
-}
+	else {
+		return false;
+	}
+};
 
 T3.Model.prototype.getWinner = function() {
 	var winner = null;
