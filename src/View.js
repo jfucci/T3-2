@@ -114,7 +114,7 @@ T3.View.prototype._drawCircle = function(x,y) {
 	this.ctx.arc(x, y, radius, 0, 2*Math.PI); 
 	this._stroke(1 / 3, 'black');
 
-	this.ctx.closePath();
+	this.ctx.closePath(); 
 };
 
 T3.View.prototype._drawCross = function(x,y) {
