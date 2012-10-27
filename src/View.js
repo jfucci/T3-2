@@ -46,9 +46,16 @@ T3.View.prototype.update = function() {
 
 	if(takenCells === this.model.xCells * this.model.yCells && !(this.model.winner)) {
 		$('#status').text('Stalemate!');
+		if(confirm("Would you like to play again?")) {
+			this.model.restart;
+			this.update;
+		}
 	}
 	else if (this.model.winner) {
 		$('#status').text(this.model.getWinner() + ' is the winner');
+		if(confirm("Would you like to play again?")) {
+			this.model.restart;
+			this.update;
 	}
 	else {
 		$('#status').text(this.model.currentPlayer.name + "'s move");
