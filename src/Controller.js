@@ -20,6 +20,31 @@ T3.Controller = function() {
 		model.restart();
 		view.update();
 	}).click();
+
+	$("#canvas").mousemove(function(event){
+		view.update();
+		var pixelX = event.pageX - view.canvas.offset().left;
+		var pixelY = event.pageY - view.canvas.offset().top;
+		var cellWidthInPixels = view.canvas.width() / model.xCells;
+		var cellHeightInPixels = view.canvas.height() / model.yCells;
+
+		var x = Math.floor(pixelX / cellWidthInPixels); //find the x index of the cell
+		var y = Math.floor(pixelY / cellHeightInPixels); //find the y index of the cell
+
+		//this outer if statement is necessary to get rid of an uncaught type error that 
+		//occured when moving the mouse off of the right side of the canvas
+		if(x < model.xCells) {
+			if(model.currentPlayer.name === 'X' && !(model.board[x][y])) {
+				view._drawCross(x, y, '#C3C3C3');
+			} else if(model.currentPlayer.name === 'O' && !(model.board[x][y])) {
+				view._drawCircle(x, y, '#C3C3C3');
+			}
+		}
+    });
+
+    //$("#canvas").mouseleave(function(event){
+    //	view.update();
+    //});
 };
 
 //this function is called once the page is done loading
