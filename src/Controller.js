@@ -7,8 +7,9 @@ T3.Controller = function() {
 
 	$("#restart").click(function() {
 		//make the user choose tic tac toe or connect four, and setup Model accordingly:
+		var mode = null;
 		while(mode !== '1' && mode !== '2') {
-		var mode = prompt("Tic Tac Toe (1) or Connect Four (2)?");
+			mode = prompt("Tic Tac Toe (1) or Connect Four (2)?");
 		}
 		if(mode === '1') {
 			model.setupTicTacToe();
@@ -19,7 +20,7 @@ T3.Controller = function() {
 		view.update();
 	}).click();
 
-	$("#canvas").mousemove(function(event){
+	$("#canvas").mousemove(function(event) {
 		view.update();
 		var pixelX = event.pageX - view.canvas.offset().left;
 		var pixelY = event.pageY - view.canvas.offset().top;
@@ -28,17 +29,16 @@ T3.Controller = function() {
 
 		var x = Math.floor(pixelX / cellWidthInPixels); //find the x index of the cell
 		var y = Math.floor(pixelY / cellHeightInPixels); //find the y index of the cell
-
 		//this outer if statement is necessary to get rid of an uncaught type error that 
 		//occured when moving the mouse off of the right side of the canvas
-		if(x < model.xCells  && !(model.board[x][y]) && !(model.getWinner())) {
+		if(x < model.xCells && !(model.board[x][y]) && !(model.getWinner())) {
 			if(model.currentPlayer.name === 'X') {
 				view._drawCross(x, y, '#C3C3C3');
 			} else if(model.currentPlayer.name === 'O') {
 				view._drawCircle(x, y, '#C3C3C3');
 			}
 		}
-    });
+	});
 };
 
 //this function is called once the page is done loading

@@ -113,8 +113,8 @@ T3.View.prototype._drawCross = function(x, y, color) {
 	var cellWidth = 1 / this.model.xCells;
 
 	//necessary so the 'X' does not go all the way to the corners of the cell:
-	var adjustment = cellWidth - (cellWidth / 8);	//the width and height of every 'X' will be 3/4 
-													//the cell width, same as the diameter of every 'O'
+	var adjustment = cellWidth - (cellWidth / 8); //the width and height of every 'X' will be 3/4 
+	//the cell width, same as the diameter of every 'O'
 	var cellWidthAdjusted = cellWidth - 2 * adjustment;
 
 	x = (x * cellWidth) + adjustment; //change x to the x coordinate of the top left corner of the cell
