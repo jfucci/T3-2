@@ -49,131 +49,81 @@ T3.Model.prototype.move = function(x, y) {
 	}
 };
 
-T3.Model.prototype.checkRow = function(x, y) {
-	var count = 1;
-
-	for(var xx = x; xx > 0 && xx >= x - this.winnerSize; xx--) {
-		if(this.board[xx][y] === this.board[xx - 1][y] && this.board[xx][y] === this.board[x][y]) {
-			count++;
-		}
-	}
-
-	for(xx = x; xx < this.xCells - 1 && xx <= x + this.winnerSize; xx++) {
-		if(this.board[xx][y] === this.board[xx + 1][y] && this.board[xx][y] === this.board[x][y]) {
-			count++;
-		}
-	}
-
-	if(count >= this.winnerSize) {
-		return true;
-	} else {
-		return false;
-	}
-};
-
-T3.Model.prototype.checkColumn = function(x, y) {
-	var count = 1;
-	for(var yy = y; yy > 0 && yy >= y - this.winnerSize; yy--) {
-		if(this.board[x][yy] === this.board[x][yy - 1] && this.board[x][yy] === this.board[x][y]) {
-			count++;
-		}
-	}
-
-	for(yy = y; yy < this.yCells - 1 && yy <= y + this.winnerSize; yy++) {
-		if(this.board[x][yy] === this.board[x][yy + 1] && this.board[x][yy] === this.board[x][y]) {
-			count++;
-		}
-	}
-
-	if(count >= this.winnerSize) {
-		return true;
-	} else {
-		return false;
-	}
-};
-
-//checks the diagonal going from top left to bottom right
-T3.Model.prototype.checkLeftDiagonal = function(x, y) {
-	var xx = x;
-	var yy = y;
-	var count = 1;
-	while(xx > 0 && xx >= x - this.winnerSize && yy > 0 && yy >= y - this.winnerSize) {
-
-		if(this.board[xx][yy] === this.board[xx - 1][yy - 1] && this.board[xx][yy] === this.board[x][y]) {
-			count++;
-		}
-		xx--;
-		yy--;
-	}
-
-	xx = x;
-	yy = y;
-
-	while(xx < this.xCells - 1 && xx <= x + this.winnerSize && yy < this.yCells - 1 && yy <= y + this.winnerSize) {
-
-		if(this.board[xx][yy] === this.board[xx + 1][yy + 1] && this.board[xx][yy] === this.board[x][y]) {
-			count++;
-		}
-		xx++;
-		yy++;
-	}
-
-	if(count >= this.winnerSize) {
-		return true;
-	} else {
-		return false;
-	}
-};
-
-//checks the diagonal going from top right to bottom left
-T3.Model.prototype.checkRightDiagonal = function(x, y) {
-	var xx = x;
-	var yy = y;
-	var count = 1;
-	while(xx < this.xCells - 1 && xx <= x + this.winnerSize && yy > 0 && yy >= y - this.winnerSize) {
-		if(this.board[xx][yy] === this.board[xx + 1][yy - 1] && this.board[xx][yy] === this.board[x][y]) {
-			count++;
-		}
-		xx++;
-		yy--;
-	}
-
-	xx = x;
-	yy = y;
-
-	while(xx > 0 && xx >= x - this.winnerSize && yy < this.yCells - 1 && yy <= y + this.winnerSize) {
-		if(this.board[xx][yy] === this.board[xx - 1][yy + 1] && this.board[xx][yy] === this.board[x][y]) {
-			count++;
-		}
-		xx--;
-		yy++;
-	}
-
-	if(count >= this.winnerSize) {
-		return true;
-	} else {
-		return false;
-	}
-};
-
-T3.Model.prototype.checkWinner = function(x, y) {
-	//this if statement returns true if any of the check methods returns
-	//true, and returns false if all of them return false:
-	if(this.checkRow(x, y) || this.checkColumn(x, y) || this.checkLeftDiagonal(x, y) || this.checkRightDiagonal(x, y)) {
-		return true;
-	} else {
-		return false;
-	}
-};
-
-T3.Model.prototype.getWinner = function() {
-	var winner = null;
+//returns true if player is the winner if checkSquareWinner(x,y,player)
+//returns true for any square. Otherwise it returns false.
+T3.Model.prototype.checkWinner = function(player) {
 	for(var x = 0; x < this.xCells; x++) {
 		for(var y = 0; y < this.yCells; y++) {
-			if(this.board[x][y] && this.checkWinner(x, y)) {
-				winner = this.board[x][y];
+			if(this.board[x][y] === player && this.checkSquareWinner(x, y, player)) {
+				return true;
+			}
+		}
+	}
+	return false; //if checkWinner() exits the for loop, no squares have a line that entirely matches 'player'
+};
+
+
+//returns true if checkLineWinner(x,y,deltaX,deltaY,player) returns true
+//for any of the 8 possible lines originating at x, y. Otherwise return false.
+T3.Model.prototype.checkSquareWinner = function(x, y, player) {
+	var winnerIndex = this.winnerSize - 1;
+
+	for(var deltaX = -winnerIndex; deltaX <= winnerIndex; deltaX += winnerIndex) {
+		for(var deltaY = -winnerIndex; deltaY <= winnerIndex; deltaY += winnerIndex) {
+			if(deltaX !== 0 || deltaY !== 0) {
+				if(this.checkLineWinner(x, y, deltaX, deltaY, player)) {
+					return true;
+				}
+			}
+		}
+	}
+	return false; //if checkSquareWinner exits the for loop, no line entirely matches 'player' for square x, y
+};
+
+//returns false if any squares along line starting at x,y and 
+//heading in direction deltaX, deltaY are off board or not owned by player. Otherwise return true.
+T3.Model.prototype.checkLineWinner = function(x, y, deltaX, deltaY, player) {
+	var targetX = x + deltaX;
+	var targetY = y + deltaY;
+
+	if(targetX < 0 || targetY < 0 || targetX >= this.xCells || targetY >= this.yCells) {
+		return false;
+	} else {
+		var isWinner = true;
+		var moveX = 1;
+		var moveY = 1;
+
+		if(deltaX < 0) {
+			moveX = -1;
+		}
+		if(deltaY < 0) {
+			moveY = -1;
+		}
+
+		while(x !== targetX || y !== targetY) {
+			if(x !== targetX) {
+				x += moveX;
+			}
+			if(y !== targetY) {
+				y += moveY;
+			}
+			if(this.board[x][y] !== player) {
+				isWinner = false;
 				break;
 			}
+			isWinner = true;
+		}
+		return isWinner;
+	}
+};
+
+//loops through the players array and returns the one (if any) that checkWinner returns true for
+T3.Model.prototype.getWinner = function() {
+	var winner = null;
+	for(var iii = 0; iii < this.players.length; iii++) {
+		if(this.checkWinner(this.players[iii].name)) {
+			winner = this.players[iii].name;
+			break;
 		}
 	}
 	return winner;
