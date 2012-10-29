@@ -3,20 +3,18 @@
 T3.Controller = function() {
 
 	var model = new T3.Model();
-	//make the user choose tic tac toe or connect four, and setup Model accordingly:
-	var mode = {};
-	while(mode !== '1' && mode !== '2') {
-		mode = prompt("Tic Tac Toe (1) or Connect Four (2)?");
-	}
-	if(mode === '1') {
-		model.setupTicTacToe();
-	} else {
-		model.setupConnect4();
-	}
-
 	var view = new T3.View(model);
 
 	$("#restart").click(function() {
+		//make the user choose tic tac toe or connect four, and setup Model accordingly:
+		while(mode !== '1' && mode !== '2') {
+		var mode = prompt("Tic Tac Toe (1) or Connect Four (2)?");
+		}
+		if(mode === '1') {
+			model.setupTicTacToe();
+		} else {
+			model.setupConnect4();
+		}
 		model.restart();
 		view.update();
 	}).click();
@@ -33,10 +31,10 @@ T3.Controller = function() {
 
 		//this outer if statement is necessary to get rid of an uncaught type error that 
 		//occured when moving the mouse off of the right side of the canvas
-		if(x < model.xCells) {
-			if(model.currentPlayer.name === 'X' && !(model.board[x][y])) {
+		if(x < model.xCells  && !(model.board[x][y]) && !(model.getWinner())) {
+			if(model.currentPlayer.name === 'X') {
 				view._drawCross(x, y, '#C3C3C3');
-			} else if(model.currentPlayer.name === 'O' && !(model.board[x][y])) {
+			} else if(model.currentPlayer.name === 'O') {
 				view._drawCircle(x, y, '#C3C3C3');
 			}
 		}
