@@ -46,19 +46,11 @@ T3.View.prototype.update = function() {
 		}
 	}
 
-	//update the status and ask the user if they would like to play again if there is a winner:
+	//update the status if there is a winner or stalemate, else player whose move it is:
 	if(takenCells === this.model.xCells * this.model.yCells && !(this.model.getWinner())) {
 		$('#status').text('Stalemate!');
-		if(confirm('Stalemate!\nWould you like to play again?')) {
-			this.model.restart();
-			this.update();
-		}
 	} else if(this.model.getWinner()) {
 		$('#status').text(this.model.getWinner() + ' is the winner');
-		if(confirm(this.model.getWinner() + ' is the winner\nWould you like to play again?')) {
-			this.model.restart();
-			this.update();
-		}
 	} else {
 		$('#status').text(this.model.currentPlayer.name + "'s move");
 	}
