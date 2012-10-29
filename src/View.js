@@ -19,10 +19,8 @@ T3.View.prototype._mouseClick = function(event) {
 	var pixelX = event.pageX - this.canvas.offset().left;
 	var pixelY = event.pageY - this.canvas.offset().top;
 	if(!(this.model.getWinner())) {
-		var widthInPixels = this.canvas.width();
-		var heightInPixels = this.canvas.height();
-		var cellWidthInPixels = widthInPixels / this.model.xCells;
-		var cellHeightInPixels = heightInPixels / this.model.yCells;
+		var cellWidthInPixels = this.canvas.width() / this.model.xCells;
+		var cellHeightInPixels = this.canvas.height() / this.model.yCells;
 
 		var x = Math.floor(pixelX / cellWidthInPixels); //find the x index of the cell
 		var y = Math.floor(pixelY / cellHeightInPixels); //find the y index of the cell
@@ -39,10 +37,10 @@ T3.View.prototype.update = function() {
 	for(var x = 0; x < this.model.xCells; x++) {
 		for(var y = 0; y < this.model.yCells; y++) {
 			if(this.model.board[x][y] === 'O') {
-				this._drawCircle(x, y);
+				this._drawCircle(x, y, 'black');
 				takenCells++;
 			} else if(this.model.board[x][y] === 'X') {
-				this._drawCross(x, y);
+				this._drawCross(x, y, 'black');
 				takenCells++;
 			}
 		}
@@ -106,7 +104,7 @@ T3.View.prototype._stroke = function(pixelWeight, color) {
 	this.ctx.stroke();
 };
 
-T3.View.prototype._drawCircle = function(x, y) {
+T3.View.prototype._drawCircle = function(x, y, color) {
 	this.ctx.beginPath();
 
 	var cellWidth = 1 / this.model.xCells;
@@ -114,17 +112,17 @@ T3.View.prototype._drawCircle = function(x, y) {
 	y = (y / this.model.yCells) + cellWidth / 2; //change y to be the y coordinate of the middle of the cell
 	var radius = (cellWidth / 2) - (cellWidth / 8); //the diameter will be 3/4 the cell width
 	this.ctx.arc(x, y, radius, 0, 2 * Math.PI);
-	this._stroke(1 / 3, 'black');
+	this._stroke(1 / 2, color);
 
 	this.ctx.closePath();
 };
 
-T3.View.prototype._drawCross = function(x, y) {
+T3.View.prototype._drawCross = function(x, y, color) {
 	var cellWidth = 1 / this.model.xCells;
 
 	//necessary so the 'X' does not go all the way to the corners of the cell:
-	var adjustment = cellWidth - (cellWidth / 8); //the width and height of every 'X' will be 3/4 
-	//the cell width, same as the diameter of every 'O'
+	var adjustment = cellWidth - (cellWidth / 8);	//the width and height of every 'X' will be 3/4 
+													//the cell width, same as the diameter of every 'O'
 	var cellWidthAdjusted = cellWidth - 2 * adjustment;
 
 	x = (x * cellWidth) + adjustment; //change x to the x coordinate of the top left corner of the cell
@@ -134,6 +132,6 @@ T3.View.prototype._drawCross = function(x, y) {
 	this.ctx.lineTo(x + cellWidthAdjusted, y + cellWidthAdjusted);
 	this.ctx.moveTo(x, y + cellWidthAdjusted);
 	this.ctx.lineTo(x + cellWidthAdjusted, y);
-	this._stroke(1 / 3, 'black');
+	this._stroke(1 / 2, color);
 	this.ctx.closePath();
 };
