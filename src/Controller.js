@@ -24,20 +24,28 @@ T3.Controller = function() {
 		view.update();
 		var pixelX = event.pageX - view.canvas.offset().left;
 		var pixelY = event.pageY - view.canvas.offset().top;
-		var cellWidthInPixels = view.canvas.width() / model.xCells;
-		var cellHeightInPixels = view.canvas.height() / model.yCells;
 
-		var x = Math.floor(pixelX / cellWidthInPixels); //find the x index of the cell
-		var y = Math.floor(pixelY / cellHeightInPixels); //find the y index of the cell
 		//this outer if statement is necessary to get rid of an uncaught type error that 
-		//occured when moving the mouse off of the right side of the canvas
-		if(x < model.xCells && !(model.board[x][y]) && !(model.getWinner())) {
-			if(model.currentPlayer.name === 'X') {
-				view._drawCross(x, y, '#C3C3C3');
-			} else if(model.currentPlayer.name === 'O') {
-				view._drawCircle(x, y, '#C3C3C3');
+		//occured when moving the mouse off the canvas
+		if(pixelX < view.canvas.width() && pixelX < view.canvas.height() && pixelX > 0 && pixelY > 0) {
+			var cellWidthInPixels = view.canvas.width() / model.xCells;
+			var cellHeightInPixels = view.canvas.height() / model.yCells;
+
+			var x = Math.floor(pixelX / cellWidthInPixels); //find the x index of the cell
+			var y = Math.floor(pixelY / cellHeightInPixels); //find the y index of the cell
+			
+			if(!(model.board[x][y]) && !(model.getWinner())) {
+				if(model.currentPlayer.name === 'X') {
+					view._drawCross(x, y, '#C3C3C3');
+				} else if(model.currentPlayer.name === 'O') {
+					view._drawCircle(x, y, '#C3C3C3');
+				}
 			}
 		}
+	});
+
+	$("#canvas").mouseleave(function(event) {
+		view.update();
 	});
 };
 
