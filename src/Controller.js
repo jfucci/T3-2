@@ -41,10 +41,6 @@ T3.Controller = function() {
 			}
 		}
     });
-
-    //$("#canvas").mouseleave(function(event){
-    //	view.update();
-    //});
 };
 
 //this function is called once the page is done loading
