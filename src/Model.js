@@ -38,15 +38,20 @@ T3.Model.prototype.restart = function() {
 T3.Model.prototype.move = function(x, y) {
 	if(!(this.board[x][y])) {
 		if(this.gravity) {
-			for(y = this.yCells - 1; y >= 0; y--) {
-				if(!(this.board[x][y])) {
-					break;
-				}
-			}
+			y = this.cellWithGravityY(x, y);
 		}
 		this.board[x][y] = this.currentPlayer.name;
 		this.currentPlayer = this.players[(this.players.indexOf(this.currentPlayer) + 1) % this.players.length];
 	}
+};
+
+T3.Model.prototype.cellWithGravityY = function(x, y) {
+	for(y = this.yCells - 1; y >= 0; y--) {
+		if(!(this.board[x][y])) {
+			break;
+		}
+	}	
+	return y;
 };
 
 //returns true if player is the winner if checkSquareWinner(x,y,player)
@@ -111,7 +116,6 @@ T3.Model.prototype.checkLineWinner = function(x, y, deltaX, deltaY, player) {
 				isWinner = false;
 				break;
 			}
-			isWinner = true;
 		}
 		return isWinner;
 	}
